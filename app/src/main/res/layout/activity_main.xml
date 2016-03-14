@@ -1,0 +1,158 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/bt_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="@string/bt_label" />
+
+    <TextView
+        android:id="@+id/bt_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/bt_label" />
+
+
+    <TextView
+        android:id="@+id/MACaddr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bt_label"
+         />
+
+    <TextView
+        android:id="@+id/manufLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/MACaddr"
+        android:text="@string/manuf_label" />
+
+    <TextView
+        android:id="@+id/manuf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/MACaddr"
+        android:layout_toEndOf="@+id/manufLabel" />
+
+
+    <TextView
+        android:id="@+id/hardwareLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manufLabel"
+        android:text="@string/hardware_label" />
+
+    <TextView
+        android:id="@+id/hardware"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manufLabel"
+        android:layout_toEndOf="@+id/hardwareLabel" />
+
+
+    <TextView
+        android:id="@+id/firmwareLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manufLabel"
+        android:layout_toEndOf="@+id/hardware"
+        android:text="@string/firmware_label" />
+
+    <TextView
+        android:id="@+id/firmware"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manufLabel"
+        android:layout_toEndOf="@+id/firmwareLabel" />
+
+    <TextView
+        android:id="@+id/serialLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manufLabel"
+        android:layout_toEndOf="@+id/firmware"
+        android:text="@string/serial_label" />
+
+    <TextView
+        android:id="@+id/serial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manufLabel"
+        android:layout_toEndOf="@+id/serialLabel" />
+
+    <TextView
+        android:id="@+id/battLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/firmwareLabel"
+        android:text="@string/batt_label" />
+
+    <TextView
+        android:id="@+id/batt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/firmwareLabel"
+        android:layout_toEndOf="@+id/battLabel" />
+
+    <TextView
+        android:id="@+id/rssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/battLabel" />
+
+    <TextView
+        android:id="@+id/analogVal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/battLabel" />
+
+    <TextView
+        android:id="@+id/switchState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/battLabel" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profile Page"
+        android:id="@+id/profPage"
+        android:layout_above="@+id/start_accel"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Accel"
+        android:id="@+id/start_accel"
+        android:layout_above="@+id/stop_accel"
+        android:layout_alignStart="@+id/profPage" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop Accel"
+        android:id="@+id/stop_accel"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/start_accel" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+</RelativeLayout>

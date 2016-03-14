@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Metawear GPIO Example</string>
+
+    <string name="bt_label">"Bluetooth adapter is: "</string>
+    <string name="manuf_label">"Manufacturer: "</string>
+    <string name="serial_label">" Serial: "</string>
+    <string name="firmware_label">" Firmware: "</string>
+    <string name="hardware_label">"Hardware: "</string>
+    <string name="batt_label">"Battery Level: "</string>
+    <string name="rssi_label">"RSSI Level: "</string>
+    <string name="analog_label">"Analog read pin0: "</string>
+    <string name="switch_label">"Push-button switch: "</string>
+
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_reset">Reset</string>
+</resources>
