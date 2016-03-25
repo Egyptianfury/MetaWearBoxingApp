@@ -13,6 +13,7 @@
  * www.mbientlab.com/terms
  *
  */
+
 package ca.concordia.metaweargpioexample;
 
 import android.app.AlertDialog;
@@ -56,8 +57,14 @@ import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.module.Debug;
 import com.mbientlab.metawear.module.Gpio;
 import com.mbientlab.metawear.module.Gpio.AnalogReadMode;
+import com.mbientlab.metawear.module.Logging;
 import com.mbientlab.metawear.module.Switch;
 import com.mbientlab.metawear.module.Timer;
+import com.mbientlab.metawear.processor.Average;
+import com.mbientlab.metawear.processor.Comparison;
+import com.mbientlab.metawear.processor.Pulse;
+import com.mbientlab.metawear.processor.Rss;
+import com.mbientlab.metawear.processor.Threshold;
 
 import java.util.Locale;
 
@@ -67,7 +74,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private static final String TAG = "MetaWear GPIO Example";
     final String SWITCH_STREAM = "switch_stream";
     private final String MW_MAC_ADDRESS = "FD:8D:A0:20:CE:31";
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+
+        private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
@@ -119,8 +128,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public MetaWearBoard mwBoard;
     public MetaWearBleService.LocalBinder serviceBinder;
     public Accelerometer accelModule;
-    public static final String LOG_TAG = "ACCELL";
-    public static final String ACCEL_DATA = "accel_data";
+    public static final String LOG_TAG1 = "ACCELL";
+   public static final String ACCEL_DATA = "accel_data";
+    public static final String LOG_TAGp = "PeakValue", PEAK_VALUE = "peak_value";
+
+    public static final String LOG_TAG = "FreeFallDetection", FREE_FALL_KEY = "free_fall_key", NO_FREE_FALL_KEY = "no_free_fall_key";
+    private Debug debugModule;
+    private Logging loggingModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
         });
 
-        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
         findViewById(R.id.start_accel).setOnClickListener(new View.OnClickListener() {
@@ -152,18 +166,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 if (!mwBoard.isConnected()) {
                     Toast.makeText(MainActivity.this, "Sensor Is Not Connected, Please Connect to Start", Toast.LENGTH_LONG).show();
                     return;
-                }
-                else
+                } else
                     accelModule.enableAxisSampling();
-                    accelModule.start();
-                    Toast.makeText(MainActivity.this, "Data is Being Logged", Toast.LENGTH_LONG).show();
+                accelModule.start();
+                Toast.makeText(MainActivity.this, "Data is Being Logged", Toast.LENGTH_LONG).show();
             }
         });
 
         findViewById(R.id.stop_accel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mwBoard.isConnected()){
+                if (!mwBoard.isConnected()) {
                     Toast.makeText(MainActivity.this, "Sensor Is Not Connected, Cannot Disconnect", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -172,6 +185,15 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 Toast.makeText(MainActivity.this, "Data Logging has been Stopped", Toast.LENGTH_LONG).show();
             }
         });
+
+        findViewById(R.id.reset_but).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                debugModule.resetDevice();
+            }
+        });
+
+
     }
 
     @Override
@@ -260,20 +282,76 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
                     }
                 });
+
                 try {
+
+
                     accelModule = mwBoard.getModule(Accelerometer.class);
-                    accelModule.setOutputDataRate(5f);
-                    accelModule.routeData().fromAxes().stream(ACCEL_DATA).commit().onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
+                    accelModule.setOutputDataRate(50f);
+
+
+                    accelModule.routeData().fromAxes()
+                            .process(new Rss())
+                            .process(new Average((byte) 4))
+                            .process(new Threshold(0.5f, Threshold.OutputMode.BINARY))
+                            .split()
+                            .branch().process(new Comparison(Comparison.Operation.EQ, -1)).stream(FREE_FALL_KEY)
+                            .branch().process(new Comparison(Comparison.Operation.EQ, 1)).stream(NO_FREE_FALL_KEY)
+                            .end()
+                            .commit().onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
+                        @Override
+                        public void success(RouteManager result) {
+                            result.subscribe(FREE_FALL_KEY, new RouteManager.MessageHandler() {
+                                @Override
+                                public void process(Message message) {
+                                    Log.i(LOG_TAG, "Entered Free Fall");
+                                }
+                            });
+                            result.subscribe(NO_FREE_FALL_KEY, new RouteManager.MessageHandler() {
+                                @Override
+                                public void process(Message message) {
+                                    Log.i(LOG_TAG, "Stopped Free Fall");
+                                }
+                            });
+                        }
+
+                    });
+
+                    accelModule.routeData().fromAxes().stream(ACCEL_DATA)
+
+                            //.process(new Rss()).
+                            .commit().onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
                         @Override
                         public void success(RouteManager result) {
                             result.subscribe(ACCEL_DATA, new RouteManager.MessageHandler() {
                                 @Override
                                 public void process(Message message) {
-                                   Log.i(LOG_TAG, message.getData(CartesianFloat.class).toString());
+                                    Log.i(LOG_TAG1, message.getData(CartesianFloat.class).toString());
                                 }
                             });
                         }
                     });
+
+                 accelModule.routeData().fromAxes().stream(PEAK_VALUE)
+                            .process(new Rss())
+                            .commit().onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
+                        @Override
+                        public void success(RouteManager result) {
+                            result.subscribe(PEAK_VALUE, new RouteManager.MessageHandler() {
+                                @Override
+                                public void process(Message message) {
+                                    Log.i(LOG_TAGp, message.getData().toString());
+                                }
+                            });
+
+                        }
+
+                    });
+
+
+                    debugModule = mwBoard.getModule(Debug.class);
+                    loggingModule= mwBoard.getModule(Logging.class);
+
                 } catch (UnsupportedModuleException e) {
                     e.printStackTrace();
                 }
