@@ -39,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, FIRSTNAME TEXT, LASTNAME TEXT, WEIGHT TEXT, GYM TEXT, LEADHAND TEXT)");
-        db.execSQL("create table " + TABLE_NAME2 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, FREQ INT, DATE TEXT)");
+        db.execSQL("create table " + TABLE_NAME2 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, FREQ TEXT, DATE TEXT)");
     }
 
     @Override
@@ -71,11 +71,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean insertFreq(int x, String date){
+    public boolean insertFreq(String x){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_B, x);
-        contentValues.put(COL_C, date);
+        //contentValues.put(COL_C, date);
         long result = db.insert(TABLE_NAME2, null, contentValues);
         if (result == -1)
             return false;

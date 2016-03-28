@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public MetaWearBleService.LocalBinder serviceBinder;
     public Accelerometer accelModule;
     public static final String LOG_TAG1 = "ACCELL";
-   public static final String ACCEL_DATA = "accel_data";
+    public static final String ACCEL_DATA = "accel_data";
     public static final String LOG_TAGp = "PeakValue", PEAK_VALUE = "peak_value";
 
     public static final String LOG_TAG = "FreeFallDetection", FREE_FALL_KEY = "free_fall_key", NO_FREE_FALL_KEY = "no_free_fall_key";
@@ -229,8 +229,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 Date date = new Date();
                 dateFormat.format(date);
                 stfreq = String.valueOf(freq);
+                ProfilePage.myDb.insertFreq(stfreq);
                 Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
-                ProfilePage.myDb.insertFreq(freq, date.toString());
                 freq = 0;
             }
         });
