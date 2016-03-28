@@ -208,19 +208,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 accelModule.stop();
                 accelModule.disableAxisSampling();
                 Toast.makeText(MainActivity.this, "Data Logging has been Stopped", Toast.LENGTH_LONG).show();
-                for (int i = 0; i < arr.size(); i++)
-                {
+                for (int i = 0; i < arr.size(); i++) {
                     sttest = arr.get(i).toString();
                     Log.i(LOG_TAG1, sttest);
 
                     threshold = Double.parseDouble(sttest);
 
-                    if (sw == false && threshold <=10 )
-                    {
+                    if (sw == false && threshold <= 10) {
                         sw = true;
                     }
-                    if (threshold>= 14 &&  sw == true)
-                    {
+                    if (threshold >= 14 && sw == true) {
                         freq = freq + 1;
                         sw = false;
                     }
@@ -229,11 +226,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 Date date = new Date();
                 dateFormat.format(date);
                 stfreq = String.valueOf(freq);
-                ProfilePage.myDb.insertFreq(stfreq);
+
+                boolean isInserted = ProfilePage.myDb.insertFreq(stfreq);
+                if (isInserted)
+                    Toast.makeText(MainActivity.this, "Data Saved", Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(MainActivity.this, "Data Not Saved", Toast.LENGTH_LONG).show();
+
                 Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
                 freq = 0;
             }
-        });
+    });
 
 
 
