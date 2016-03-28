@@ -506,8 +506,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
                     buffer.append("ID: " + res.getString(0) + "\n");
-                    buffer.append("Frequency: " + res.getInt(1) + "\n");
-                    buffer.append("Date: " + res.getString(2) + "\n");
+                    buffer.append("Frequency: " + res.getString(1) + "\n");
                 }
                 showMessage("User Data", buffer.toString());
             }
