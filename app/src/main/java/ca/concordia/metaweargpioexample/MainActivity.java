@@ -66,6 +66,8 @@ import com.mbientlab.metawear.processor.Pulse;
 import com.mbientlab.metawear.processor.Rss;
 import com.mbientlab.metawear.processor.Threshold;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements ServiceConnection {
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private static final String TAG = "MetaWear GPIO Example";
     final String SWITCH_STREAM = "switch_stream";
     private final String MW_MAC_ADDRESS = "FD:8D:A0:20:CE:31";
+    TextView dataHold;
 
 
         private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -136,6 +139,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private Debug debugModule;
     private Logging loggingModule;
 
+    public int freq = 0;
+    public String stfreq;
+    public float []A;
+    public int count = 0;
+    public float test;
+    public String sttest;
+    public int k = 0;
+    public ArrayList arr = new ArrayList();
+    public double amag;
+    public double threshold;
+    public boolean sw = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +172,10 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
         });
 
+        dataHold = (TextView) findViewById(R.id.data);
+
+
+
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
@@ -170,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     accelModule.enableAxisSampling();
                 accelModule.start();
                 Toast.makeText(MainActivity.this, "Data is Being Logged", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -180,11 +200,39 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     Toast.makeText(MainActivity.this, "Sensor Is Not Connected, Cannot Disconnect", Toast.LENGTH_LONG).show();
                     return;
                 }
+
+
                 accelModule.stop();
                 accelModule.disableAxisSampling();
                 Toast.makeText(MainActivity.this, "Data Logging has been Stopped", Toast.LENGTH_LONG).show();
+                for (int i = 0; i < arr.size(); i++)
+                {
+                    sttest = arr.get(i).toString();
+                    Log.i(LOG_TAG1, sttest);
+
+                    threshold = Double.parseDouble(sttest);
+
+                    if (sw == false && threshold <=10 )
+                    {
+                        sw = true;
+
+                    }
+
+                    if (threshold>= 14 &&  sw == true)
+                    {
+                        freq = freq + 1;
+                        sw = false;
+                    }
+
+                }
+                stfreq = String.valueOf(freq);
+                Toast.makeText(MainActivity.this, "You punched " +stfreq + " times.", Toast.LENGTH_LONG).show();
+                freq = 0;
+
             }
         });
+
+
 
         findViewById(R.id.reset_but).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
 
                     accelModule = mwBoard.getModule(Accelerometer.class);
-                    accelModule.setOutputDataRate(50f);
+                    accelModule.setOutputDataRate(5f);
 
 
                     accelModule.routeData().fromAxes()
@@ -317,6 +365,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
                     });
 
+
                     accelModule.routeData().fromAxes().stream(ACCEL_DATA)
 
                             //.process(new Rss()).
@@ -324,15 +373,21 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         @Override
                         public void success(RouteManager result) {
                             result.subscribe(ACCEL_DATA, new RouteManager.MessageHandler() {
+
                                 @Override
                                 public void process(Message message) {
-                                    Log.i(LOG_TAG1, message.getData(CartesianFloat.class).toString());
+
+                                    Log.i(LOG_TAG, message.getData(CartesianFloat.class).toString());
+                                    amag =  9.8*(Math.sqrt(Math.pow(message.getData(CartesianFloat.class).x().doubleValue(), 2)+ Math.pow(message.getData(CartesianFloat.class).y().doubleValue(), 2) + Math.pow(message.getData(CartesianFloat.class).z().doubleValue(), 2)));
+                                    arr.add(amag);
+
+
                                 }
                             });
                         }
                     });
 
-                 accelModule.routeData().fromAxes().stream(PEAK_VALUE)
+                 /*accelModule.routeData().fromAxes().stream(PEAK_VALUE)
                             .process(new Rss())
                             .commit().onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
                         @Override
@@ -346,8 +401,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
                         }
 
-                    });
-
+                    });*/
 
                     debugModule = mwBoard.getModule(Debug.class);
                     loggingModule= mwBoard.getModule(Logging.class);
@@ -358,6 +412,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
                 updateDeviceInfo();
                 updateBatt();
+
+
             }
 
             @Override
@@ -425,6 +481,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
         });
     }
+
+
 
     public void clearVals() {
         MainActivity.this.runOnUiThread(new Runnable() {
