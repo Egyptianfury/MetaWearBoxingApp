@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -66,8 +67,11 @@ import com.mbientlab.metawear.processor.Pulse;
 import com.mbientlab.metawear.processor.Rss;
 import com.mbientlab.metawear.processor.Threshold;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements ServiceConnection {
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     final String SWITCH_STREAM = "switch_stream";
     private final String MW_MAC_ADDRESS = "FD:8D:A0:20:CE:31";
     TextView dataHold;
+
 
 
         private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -200,8 +205,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     Toast.makeText(MainActivity.this, "Sensor Is Not Connected, Cannot Disconnect", Toast.LENGTH_LONG).show();
                     return;
                 }
-
-
                 accelModule.stop();
                 accelModule.disableAxisSampling();
                 Toast.makeText(MainActivity.this, "Data Logging has been Stopped", Toast.LENGTH_LONG).show();
@@ -215,20 +218,20 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     if (sw == false && threshold <=10 )
                     {
                         sw = true;
-
                     }
-
                     if (threshold>= 14 &&  sw == true)
                     {
                         freq = freq + 1;
                         sw = false;
                     }
-
                 }
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = new Date();
+                dateFormat.format(date);
                 stfreq = String.valueOf(freq);
-                Toast.makeText(MainActivity.this, "You punched " +stfreq + " times.", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
+                ProfilePage.myDb.insertFreq(freq, date.toString());
                 freq = 0;
-
             }
         });
 
@@ -242,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         });
 
 
+        viewAllFreq();
     }
 
     @Override
@@ -482,7 +486,33 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         });
     }
 
+    public void showMessage(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+    }
 
+    public void viewAllFreq(){
+        findViewById(R.id.db_freq).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Cursor res = ProfilePage.myDb.getAllFreq();
+                if (res.getCount() == 0) {
+                    showMessage("Error", "No User Data");
+                    return;
+                }
+                StringBuffer buffer = new StringBuffer();
+                while (res.moveToNext()) {
+                    buffer.append("ID: " + res.getString(0) + "\n");
+                    buffer.append("Frequency: " + res.getInt(1) + "\n");
+                    buffer.append("Date: " + res.getString(2) + "\n");
+                }
+                showMessage("User Data", buffer.toString());
+            }
+        });
+    }
 
     public void clearVals() {
         MainActivity.this.runOnUiThread(new Runnable() {

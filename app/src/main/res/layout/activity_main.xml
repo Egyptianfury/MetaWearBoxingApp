@@ -172,4 +172,12 @@
         android:layout_below="@+id/rssi"
         android:layout_toEndOf="@+id/rssi" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check DB Freq"
+        android:id="@+id/db_freq"
+        android:layout_above="@+id/reset_but"
+        android:layout_alignStart="@+id/reset_but" />
+
 </RelativeLayout>

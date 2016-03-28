@@ -28,9 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Strings for Accel Table
     public static final String TABLE_NAME2 = "freq_table";
     public static final String COL_A = "ID";
-    public static final String COL_B = "XCOORD";
-    public static final String COL_C = "YCOORD";
-    public static final String COL_D = "ZCOORD";
+    public static final String COL_B = "FREQ";
+    public static final String COL_C = "DATE";
 
 
     public DatabaseHelper(Context context) {
@@ -40,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, FIRSTNAME TEXT, LASTNAME TEXT, WEIGHT TEXT, GYM TEXT, LEADHAND TEXT)");
-        db.execSQL("create table " + TABLE_NAME2 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, XCOORD REAL, YCOORD REAL, ZCOORD REAL)");
+        db.execSQL("create table " + TABLE_NAME2 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, FREQ INT, DATE TEXT)");
     }
 
     @Override
@@ -72,12 +71,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean insertFreq(float x, float y, float z){
+    public boolean insertFreq(int x, String date){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_B, x);
-        contentValues.put(COL_C, y);
-        contentValues.put(COL_D, z);
+        contentValues.put(COL_C, date);
         long result = db.insert(TABLE_NAME2, null, contentValues);
         if (result == -1)
             return false;
