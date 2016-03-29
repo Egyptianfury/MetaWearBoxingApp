@@ -222,18 +222,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         sw = false;
                     }
                 }
-                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                Date date = new Date();
-                dateFormat.format(date);
                 stfreq = String.valueOf(freq);
-
-                boolean isInserted = ProfilePage.myDb.insertFreq(stfreq);
-                if (isInserted)
-                    Toast.makeText(MainActivity.this, "Data Saved", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(MainActivity.this, "Data Not Saved", Toast.LENGTH_LONG).show();
-
-                Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
+                addFreq();
+                //Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
                 freq = 0;
             }
     });
@@ -515,6 +506,21 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
         });
     }
+
+    public void addFreq(){
+        findViewById(R.id.stop_accel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isInserted = ProfilePage.myDb.insertFreq(stfreq);
+                if (isInserted)
+                    Toast.makeText(MainActivity.this, "Data Saved", Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(MainActivity.this, "Data Not Saved", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
 
     public void clearVals() {
         MainActivity.this.runOnUiThread(new Runnable() {
