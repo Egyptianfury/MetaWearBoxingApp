@@ -152,9 +152,27 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public String sttest;
     public int k = 0;
     public ArrayList arr = new ArrayList();
+    public ArrayList arraccel = new ArrayList();
     public double amag;
-    public double threshold;
+    public double arealmag;
+    public double accel;
+    public String staccel;
+    public double accelc;
+    public String staccelc;
+    public double acceln;
+    public String stacceln;
+    public String stpeak;
+    public String stsumdist;
     public boolean sw = true;
+    public boolean swa = true;
+    public boolean swd = true;
+    public double peak;
+    public double sumdist = 0;
+    public int index = 0;
+    public String sttime;
+    public String stavga;
+    public String stforce;
+    public double force;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,24 +226,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 accelModule.stop();
                 accelModule.disableAxisSampling();
                 Toast.makeText(MainActivity.this, "Data Logging has been Stopped", Toast.LENGTH_LONG).show();
-                for (int i = 0; i < arr.size(); i++) {
-                    sttest = arr.get(i).toString();
-                    Log.i(LOG_TAG1, sttest);
-
-                    threshold = Double.parseDouble(sttest);
-
-                    if (sw == false && threshold <= 10) {
-                        sw = true;
-                    }
-                    if (threshold >= 14 && sw == true) {
-                        freq = freq + 1;
-                        sw = false;
-                    }
-                }
-                stfreq = String.valueOf(freq);
-                addFreq();
-                //Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
+                countFreq();
                 freq = 0;
+
             }
     });
 
@@ -375,9 +378,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                                 @Override
                                 public void process(Message message) {
 
-                                    Log.i(LOG_TAG, message.getData(CartesianFloat.class).toString());
                                     amag =  9.8*(Math.sqrt(Math.pow(message.getData(CartesianFloat.class).x().doubleValue(), 2)+ Math.pow(message.getData(CartesianFloat.class).y().doubleValue(), 2) + Math.pow(message.getData(CartesianFloat.class).z().doubleValue(), 2)));
-                                    arr.add(amag);
+                                    arealmag = 9.8 / (Math.tan(Math.asin(9.8 / amag)));
+                                    if (Double.isNaN(arealmag))
+                                    {
+                                        arealmag = 0;
+                                    }
+
+                                    arr.add(arealmag);
+                                    sttest = String.valueOf(arealmag);
+                                    Log.i(LOG_TAG1, sttest);
 
 
                                 }
@@ -508,20 +518,118 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public void addFreq(){
-        findViewById(R.id.stop_accel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 boolean isInserted = ProfilePage.myDb.insertFreq(stfreq);
                 if (isInserted)
                     Toast.makeText(MainActivity.this, "Data Saved", Toast.LENGTH_LONG).show();
                 else
                     Toast.makeText(MainActivity.this, "Data Not Saved", Toast.LENGTH_LONG).show();
             }
-        });
+
+    public void countFreq(){
+        sw = false;
+        swa = false;
+        swd = false;
+        for (int i = 0; i < arr.size()-1 ; i++) {
+
+
+            staccelc = arr.get(i).toString();
+            accelc = Double.parseDouble(staccelc);
+
+           stacceln = arr.get(i+1).toString();
+            acceln = Double.parseDouble(stacceln);
+
+
+            if (accelc < acceln && sw == false ) {  //start porabola sw is on swa is on asscend switch
+                sw = true;
+                swa = true;
+                Log.i(LOG_TAGp,"start");
+            }
+            else if (sw == false && swa == true)
+            {
+                sw = true;
+                Log.i(LOG_TAGp,"start p");
+            }
+
+            if (swa == true &&  sw == true && accelc > acceln) {       //peak value descend starts
+                swa = false;
+                swd = true;                                 //descend starts
+                peak = accelc;
+                stpeak = String.valueOf(peak);
+                force = peak * 567;
+                stforce = String.valueOf(force);
+                //Log.i(LOG_TAG, "peak is " + stpeak + " and force is " + stforce );
+            }
+
+            if (swd == true  && sw == true && acceln == 0)              //descned terminating statement
+            {
+                swd = false;
+                sw = false;
+                arraccel.add(accelc);
+                Log.i(LOG_TAGp, staccelc);
+                Log.i(LOG_TAGp, "end");
+                calcDistance();
+                sumdist = 0;
+
+            }
+            else if (swd == true && sw == true && accelc < acceln){
+                swd = false;
+                sw = false;
+                arraccel.add(accelc);
+                Log.i(LOG_TAGp, staccelc);
+                Log.i(LOG_TAGp, "end p");
+                calcDistance();
+                sumdist = 0;
+                swa = true; //asscend starts
+            }
+
+
+            if (sw == true) {
+                arraccel.add(accelc);
+                Log.i(LOG_TAGp, staccelc);
+            }
+
+
+
+        }
+
+
+        stfreq = String.valueOf(freq);
+        addFreq();
+        Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
+
     }
 
+    public void calcDistance(){
+        double instantdist, instanta, sumdist, avga;
+        sumdist = 0;
+        avga = 0;
+        int c =0;
+        for (int i = index; i < arraccel.size() ; i++) {
+
+            instanta = Double.parseDouble(arraccel.get(i).toString());
+            instantdist = 0.5*instanta;
+            sumdist = sumdist + instantdist;
+            index = index + 1;
+            c = c+1;
+            avga = avga + instanta;
+        }
+        avga = avga / c;
+        stavga = String.valueOf(avga);
+        sumdist = sumdist * c*c;
+        stsumdist = String.valueOf(sumdist);
+        sttime = String.valueOf(c);
+
+        if (sumdist > 200  && avga >= 4)
+        {
+            freq = freq + 1;
+        }
+        stfreq = String.valueOf(freq);
+
+        Log.i (LOG_TAG, stsumdist + " time " + sttime + " freq " + stfreq + " avga " + stavga);
 
 
+
+    }
     public void clearVals() {
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
