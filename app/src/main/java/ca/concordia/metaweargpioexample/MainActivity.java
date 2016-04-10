@@ -71,6 +71,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -232,11 +233,23 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
     });
 
+        findViewById(R.id.check_history).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, HistoryGraph.class);
+                startActivity(intent);
+            }
+        });
+
 
 
         findViewById(R.id.reset_but).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!mwBoard.isConnected()) {
+                    Toast.makeText(MainActivity.this, "Sensor Is Not Connected, Cannot Restart", Toast.LENGTH_LONG).show();
+                    return;
+                } else
                 debugModule.resetDevice();
             }
         });
@@ -511,6 +524,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 while (res.moveToNext()) {
                     buffer.append("ID: " + res.getString(0) + "\n");
                     buffer.append("Frequency: " + res.getString(1) + "\n");
+                    buffer.append("Date: " + res.getString(2) + "\n");
                 }
                 showMessage("User Data", buffer.toString());
             }
@@ -518,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public void addFreq(){
-                boolean isInserted = ProfilePage.myDb.insertFreq(stfreq);
+                boolean isInserted = ProfilePage.myDb.insertFreq(stfreq, getDate());
                 if (isInserted)
                     Toast.makeText(MainActivity.this, "Data Saved", Toast.LENGTH_LONG).show();
                 else
@@ -591,11 +605,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
 
         }
-
-
         stfreq = String.valueOf(freq);
-        addFreq();
         Toast.makeText(MainActivity.this, "You punched " + stfreq + " times.", Toast.LENGTH_LONG).show();
+        addFreq();
 
     }
 
@@ -625,10 +637,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
         stfreq = String.valueOf(freq);
 
-        Log.i (LOG_TAG, stsumdist + " time " + sttime + " freq " + stfreq + " avga " + stavga);
+        Log.i(LOG_TAG, stsumdist + " time " + sttime + " freq " + stfreq + " avga " + stavga);
 
 
 
+    }
+
+    public String getDate(){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 1);
+        Date date = cal.getTime();
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format1.format(cal.getTime());
     }
     public void clearVals() {
         MainActivity.this.runOnUiThread(new Runnable() {

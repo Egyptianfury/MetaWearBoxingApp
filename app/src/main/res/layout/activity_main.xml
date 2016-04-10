@@ -128,8 +128,9 @@
         android:layout_height="wrap_content"
         android:text="Profile Page"
         android:id="@+id/profPage"
-        android:layout_above="@+id/start_accel"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignBaseline="@+id/check_history"
+        android:layout_alignBottom="@+id/check_history"
+        android:layout_toEndOf="@+id/db_freq" />
 
     <Button
         android:layout_width="wrap_content"
@@ -137,7 +138,7 @@
         android:text="Start Accel"
         android:id="@+id/start_accel"
         android:layout_above="@+id/stop_accel"
-        android:layout_alignStart="@+id/profPage" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -162,7 +163,7 @@
         android:text="Reset"
         android:id="@+id/reset_but"
         android:layout_above="@+id/profPage"
-        android:layout_alignStart="@+id/profPage" />
+        android:layout_toEndOf="@+id/db_freq" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -177,7 +178,16 @@
         android:layout_height="wrap_content"
         android:text="Check DB Freq"
         android:id="@+id/db_freq"
-        android:layout_above="@+id/reset_but"
-        android:layout_alignStart="@+id/reset_but" />
+        android:layout_alignBaseline="@+id/start_accel"
+        android:layout_alignBottom="@+id/start_accel"
+        android:layout_toEndOf="@+id/stop_accel" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:id="@+id/check_history"
+        android:layout_below="@+id/db_freq"
+        android:layout_toEndOf="@+id/start_accel" />
 
 </RelativeLayout>
