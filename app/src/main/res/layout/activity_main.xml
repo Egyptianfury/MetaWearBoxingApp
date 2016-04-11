@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:background="@drawable/boxingmainactivity"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
@@ -127,26 +128,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Profile Page"
+        android:background="@null"
         android:id="@+id/profPage"
-        android:layout_alignBaseline="@+id/check_history"
-        android:layout_alignBottom="@+id/check_history"
-        android:layout_toEndOf="@+id/db_freq" />
+        android:layout_below="@+id/progressBar"
+        android:layout_alignParentStart="true"
+        android:textColor="#ffffff"
+        android:textStyle="bold|normal|italic" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start Accel"
         android:id="@+id/start_accel"
-        android:layout_above="@+id/stop_accel"
-        android:layout_alignParentStart="true" />
+        android:background="@null"
+        android:textColor="#ffffff"
+        android:textStyle="bold|normal|italic"
+        android:layout_below="@+id/bt_label"
+        android:layout_alignEnd="@+id/bt_label" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stop Accel"
         android:id="@+id/stop_accel"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/start_accel" />
+        android:background="@null"
+        android:textStyle="bold|normal|italic"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/bt_status"
+        android:layout_toEndOf="@+id/progressBar" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -161,9 +170,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reset"
+        android:background="@null"
         android:id="@+id/reset_but"
-        android:layout_above="@+id/profPage"
-        android:layout_toEndOf="@+id/db_freq" />
+        android:layout_above="@+id/check_history"
+        android:layout_alignParentStart="true"
+        android:textColor="#ffffff"
+        android:textStyle="bold|normal|italic" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -178,16 +190,21 @@
         android:layout_height="wrap_content"
         android:text="Check DB Freq"
         android:id="@+id/db_freq"
-        android:layout_alignBaseline="@+id/start_accel"
-        android:layout_alignBottom="@+id/start_accel"
-        android:layout_toEndOf="@+id/stop_accel" />
+        android:background="@null"
+        android:textColor="#ffffff"
+        android:textStyle="bold|normal|italic"
+        android:layout_alignTop="@+id/data"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="History"
+        android:background="@null"
         android:id="@+id/check_history"
-        android:layout_below="@+id/db_freq"
-        android:layout_toEndOf="@+id/start_accel" />
+        android:textColor="#ffffff"
+        android:textStyle="bold|normal|italic"
+        android:layout_alignBottom="@+id/progressBar"
+        android:layout_alignEnd="@+id/hardware" />
 
 </RelativeLayout>
