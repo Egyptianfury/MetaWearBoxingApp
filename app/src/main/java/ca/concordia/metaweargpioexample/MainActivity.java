@@ -583,7 +583,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         stsumdist = String.valueOf(sumdist);
         sttime = String.valueOf(c);
 
-        if (sumdist > 200  && avga >= 4)
+        if (c >=3  && avga >= 5)
         {
             freq = freq + 1;
         }
