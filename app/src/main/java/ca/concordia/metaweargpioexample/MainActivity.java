@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public boolean swd = true;
     public double peak;
     public double sumdist = 0;
+    public int ind = 0;
     public int index = 0;
     public String sttime;
     public String stavga;
@@ -212,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 } else
                     accelModule.enableAxisSampling();
                 accelModule.start();
+                freq = 0;
                 Toast.makeText(MainActivity.this, "Data is Being Logged", Toast.LENGTH_LONG).show();
 
             }
@@ -264,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         unregisterReceiver(mReceiver);
         super.onDestroy();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -543,8 +546,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         sw = false;
         swa = false;
         swd = false;
-        for (int i = 0; i < arr.size()-1 ; i++) {
-
+        for (int i = ind; i < arr.size()-1 ; i++) {
+            ind = ind + 1;
 
             staccelc = arr.get(i).toString();
             accelc = Double.parseDouble(staccelc);
