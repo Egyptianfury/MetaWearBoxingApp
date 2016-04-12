@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Metawear GPIO Example</string>
+    <string name="app_name">Pugno</string>
 
     <string name="bt_label">"Bluetooth adapter is: "</string>
     <string name="manuf_label">"Manufacturer: "</string>
