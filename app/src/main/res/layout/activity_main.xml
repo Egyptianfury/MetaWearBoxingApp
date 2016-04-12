@@ -22,107 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/bt_label" />
 
-
-    <TextView
-        android:id="@+id/MACaddr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bt_label"
-         />
-
-    <TextView
-        android:id="@+id/manufLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/MACaddr"
-        android:text="@string/manuf_label" />
-
-    <TextView
-        android:id="@+id/manuf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/MACaddr"
-        android:layout_toEndOf="@+id/manufLabel" />
-
-
-    <TextView
-        android:id="@+id/hardwareLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/manufLabel"
-        android:text="@string/hardware_label" />
-
-    <TextView
-        android:id="@+id/hardware"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/manufLabel"
-        android:layout_toEndOf="@+id/hardwareLabel" />
-
-
-    <TextView
-        android:id="@+id/firmwareLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/manufLabel"
-        android:layout_toEndOf="@+id/hardware"
-        android:text="@string/firmware_label" />
-
-    <TextView
-        android:id="@+id/firmware"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/manufLabel"
-        android:layout_toEndOf="@+id/firmwareLabel" />
-
-    <TextView
-        android:id="@+id/serialLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/manufLabel"
-        android:layout_toEndOf="@+id/firmware"
-        android:text="@string/serial_label" />
-
-    <TextView
-        android:id="@+id/serial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/manufLabel"
-        android:layout_toEndOf="@+id/serialLabel" />
-
-    <TextView
-        android:id="@+id/battLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/firmwareLabel"
-        android:text="@string/batt_label" />
-
-    <TextView
-        android:id="@+id/batt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/firmwareLabel"
-        android:layout_toEndOf="@+id/battLabel" />
-
-    <TextView
-        android:id="@+id/rssi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/battLabel" />
-
-    <TextView
-        android:id="@+id/analogVal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/battLabel" />
-
-    <TextView
-        android:id="@+id/switchState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/battLabel" />
-
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -130,32 +29,32 @@
         android:text="Profile Page"
         android:background="@null"
         android:id="@+id/profPage"
-        android:layout_below="@+id/progressBar"
-        android:layout_alignParentStart="true"
         android:textColor="#ffffff"
-        android:textStyle="bold|normal|italic" />
+        android:textStyle="bold|normal|italic"
+        android:layout_above="@+id/db_freq"
+        android:layout_toEndOf="@+id/bt_label" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Accel"
+        android:text="Start Round"
         android:id="@+id/start_accel"
         android:background="@null"
         android:textColor="#ffffff"
         android:textStyle="bold|normal|italic"
-        android:layout_below="@+id/bt_label"
-        android:layout_alignEnd="@+id/bt_label" />
+        android:layout_alignTop="@+id/stop_accel"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop Accel"
+        android:text="Stop Round"
         android:id="@+id/stop_accel"
         android:background="@null"
         android:textStyle="bold|normal|italic"
         android:textColor="#ffffff"
-        android:layout_below="@+id/bt_status"
-        android:layout_toEndOf="@+id/progressBar" />
+        android:layout_alignStart="@+id/db_freq"
+        android:layout_marginBottom="51dp" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -172,18 +71,10 @@
         android:text="Reset"
         android:background="@null"
         android:id="@+id/reset_but"
-        android:layout_above="@+id/check_history"
-        android:layout_alignParentStart="true"
         android:textColor="#ffffff"
-        android:textStyle="bold|normal|italic" />
+        android:textStyle="bold|normal|italic"
+        android:layout_alignParentBottom="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/data"
-        android:layout_marginTop="36dp"
-        android:layout_below="@+id/rssi"
-        android:layout_toEndOf="@+id/rssi" />
 
     <Button
         android:layout_width="wrap_content"
@@ -193,8 +84,8 @@
         android:background="@null"
         android:textColor="#ffffff"
         android:textStyle="bold|normal|italic"
-        android:layout_alignTop="@+id/data"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -204,7 +95,7 @@
         android:id="@+id/check_history"
         android:textColor="#ffffff"
         android:textStyle="bold|normal|italic"
-        android:layout_alignBottom="@+id/progressBar"
-        android:layout_alignEnd="@+id/hardware" />
+        android:layout_below="@+id/profPage"
+        android:layout_alignEnd="@+id/profPage" />
 
 </RelativeLayout>

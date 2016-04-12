@@ -197,10 +197,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
         });
 
-        dataHold = (TextView) findViewById(R.id.data);
-
-
-
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
@@ -214,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     accelModule.enableAxisSampling();
                 accelModule.start();
                 freq = 0;
-                Toast.makeText(MainActivity.this, "Data is Being Logged", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Round Has Started", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -228,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 }
                 accelModule.stop();
                 accelModule.disableAxisSampling();
-                Toast.makeText(MainActivity.this, "Data Logging has been Stopped", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Round Has Ended", Toast.LENGTH_LONG).show();
                 countFreq();
                 freq = 0;
 
@@ -342,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     @Override
                     public void run() {
                         Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_LONG).show();
-                        ((TextView) findViewById(R.id.MACaddr)).setText("Connected to " + MW_MAC_ADDRESS);
                         spinner.setVisibility(View.GONE);
 
                     }
@@ -433,11 +428,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 } catch (UnsupportedModuleException e) {
                     e.printStackTrace();
                 }
-
-                updateDeviceInfo();
-                updateBatt();
-
-
             }
 
             @Override
@@ -448,7 +438,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         Toast.makeText(MainActivity.this, "Connection Lost", Toast.LENGTH_LONG).show();
                     }
                 });
-                clearVals();
             }
 
             @Override
@@ -465,46 +454,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         mwBoard.connect();
     }
 
-    void updateDeviceInfo() {
-        mwBoard.readDeviceInformation().onComplete(new AsyncOperation.CompletionHandler<DeviceInformation>() {
-            @Override
-            public void success(final DeviceInformation result) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((TextView) findViewById(R.id.manuf)).setText(result.manufacturer());
-                        ((TextView) findViewById(R.id.serial)).setText(result.serialNumber());
-                        ((TextView) findViewById(R.id.firmware)).setText(result.firmwareRevision());
-                        ((TextView) findViewById(R.id.hardware)).setText(result.hardwareRevision());
-                    }
-                });
-            }
-
-            @Override
-            public void failure(Throwable error) {
-                Log.e(TAG, "Error reading Device Info", error);
-            }
-        });
-    }
-
-    void updateBatt() {
-        mwBoard.readBatteryLevel().onComplete(new AsyncOperation.CompletionHandler<Byte>() {
-            @Override
-            public void success(final Byte result) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((TextView) findViewById(R.id.batt)).setText(result.toString());
-                    }
-                });
-            }
-
-            @Override
-            public void failure(Throwable error) {
-                Log.e(TAG, "Error reading Battery level", error);
-            }
-        });
-    }
 
     public void showMessage(String title, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -650,23 +599,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
         Date date = cal.getTime();
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format1 = new SimpleDateFormat("MM-dd");
         return format1.format(cal.getTime());
-    }
-    public void clearVals() {
-        MainActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ((TextView) findViewById(R.id.MACaddr)).setText("");
-                ((TextView) findViewById(R.id.manuf)).setText("");
-                ((TextView) findViewById(R.id.firmware)).setText("");
-                ((TextView) findViewById(R.id.serial)).setText("");
-                ((TextView) findViewById(R.id.hardware)).setText("");
-                ((TextView) findViewById(R.id.batt)).setText("");
-                ((TextView) findViewById(R.id.rssi)).setText("");
-                ((TextView) findViewById(R.id.analogVal)).setText("");
-                ((TextView) findViewById(R.id.switchState)).setText("");
-            }
-        });
     }
 }
